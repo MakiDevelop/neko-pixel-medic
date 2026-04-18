@@ -4,6 +4,8 @@ struct ContentView: View {
     @Bindable var model: AppModel
 
     @State private var isDropTargeted = false
+    @State private var comparisonSplit: CGFloat = 0.5
+    @State private var comparisonZoom: CGFloat = 1
     private let topContentInset: CGFloat = 44
 
     var body: some View {
@@ -274,17 +276,14 @@ struct ContentView: View {
                 if model.importedPhoto == nil {
                     EmptyPreviewState(importAction: model.importPhoto)
                 } else {
-                    ViewThatFits(in: .horizontal) {
-                        HStack(spacing: 16) {
-                            imagePane(title: "Original", image: model.originalImage, subtitle: model.importedPhoto?.readableDimensions ?? "尚未載入", accent: .white.opacity(0.9))
-                            imagePane(title: "Prototype Output", image: model.processedImage, subtitle: outputSubtitle, accent: Color(red: 0.22, green: 0.74, blue: 0.68))
-                        }
-
-                        VStack(spacing: 16) {
-                            imagePane(title: "Original", image: model.originalImage, subtitle: model.importedPhoto?.readableDimensions ?? "尚未載入", accent: .white.opacity(0.9))
-                            imagePane(title: "Prototype Output", image: model.processedImage, subtitle: outputSubtitle, accent: Color(red: 0.22, green: 0.74, blue: 0.68))
-                        }
-                    }
+                    ComparisonStage(
+                        originalImage: model.originalImage,
+                        processedImage: model.processedImage,
+                        processedSubtitle: outputSubtitle,
+                        isProcessing: model.isProcessing,
+                        splitPosition: $comparisonSplit,
+                        zoomScale: $comparisonZoom
+                    )
                 }
             }
         }
@@ -378,56 +377,6 @@ struct ContentView: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .topLeading)
-    }
-
-    private func imagePane(title: String, image: NSImage?, subtitle: String, accent: Color) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Text(title)
-                    .font(.title3.weight(.semibold))
-                Spacer()
-                Text(subtitle)
-                    .font(.system(size: 12, weight: .semibold, design: .rounded))
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 6)
-                    .background(accent.opacity(0.18), in: Capsule())
-            }
-
-            ZStack {
-                RoundedRectangle(cornerRadius: 28, style: .continuous)
-                    .fill(Color.black.opacity(0.2))
-
-                if let image {
-                    Image(nsImage: image)
-                        .resizable()
-                        .scaledToFit()
-                        .padding(18)
-                        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
-                } else {
-                    VStack(spacing: 10) {
-                        if model.isProcessing {
-                            ProgressView()
-                                .controlSize(.large)
-                        }
-                        Label("等待 preview", systemImage: "sparkles")
-                            .font(.headline)
-                        Text("切換 preset 或 strength 後會重新產生。")
-                            .font(.callout)
-                            .foregroundStyle(.secondary)
-                    }
-                }
-            }
-            .frame(maxWidth: .infinity, minHeight: 320, maxHeight: 420)
-            .overlay(alignment: .topLeading) {
-                if model.isProcessing && title == "Prototype Output" {
-                    StatusBadge(title: "Rendering…", tint: .orange)
-                        .padding(16)
-                }
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .topLeading)
-        .padding(18)
-        .background(Color.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 30, style: .continuous))
     }
 
     private var outputSubtitle: String {
@@ -710,6 +659,159 @@ private struct ModelLibraryRow: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(14)
         .background(Color.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+    }
+}
+
+private struct ComparisonStage: View {
+    let originalImage: NSImage?
+    let processedImage: NSImage?
+    let processedSubtitle: String
+    let isProcessing: Bool
+    @Binding var splitPosition: CGFloat
+    @Binding var zoomScale: CGFloat
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            HStack {
+                Text("左右拖曳比較原圖與強化後")
+                    .font(.title3.weight(.semibold))
+                Spacer()
+                Text(processedSubtitle)
+                    .font(.system(size: 12, weight: .semibold, design: .rounded))
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 6)
+                    .background(Color(red: 0.22, green: 0.74, blue: 0.68).opacity(0.18), in: Capsule())
+            }
+
+            HStack(spacing: 12) {
+                Label("縮放", systemImage: "plus.magnifyingglass")
+                    .font(.system(size: 12, weight: .semibold, design: .rounded))
+                    .foregroundStyle(.secondary)
+
+                Slider(
+                    value: Binding(
+                        get: { Double(zoomScale) },
+                        set: { zoomScale = CGFloat($0) }
+                    ),
+                    in: 1...4
+                )
+                .tint(Color(red: 0.99, green: 0.62, blue: 0.37))
+
+                Text("\(Int(zoomScale * 100))%")
+                    .font(.system(size: 12, weight: .bold, design: .rounded))
+                    .frame(width: 48, alignment: .trailing)
+
+                Button("重設") {
+                    zoomScale = 1
+                }
+                .buttonStyle(.plain)
+                .font(.system(size: 12, weight: .semibold, design: .rounded))
+                .padding(.horizontal, 10)
+                .padding(.vertical, 7)
+                .background(Color.white.opacity(0.1), in: Capsule())
+            }
+
+            ZStack {
+                RoundedRectangle(cornerRadius: 28, style: .continuous)
+                    .fill(Color.black.opacity(0.2))
+
+                if let originalImage {
+                    GeometryReader { proxy in
+                        let viewportWidth = proxy.size.width
+                        let viewportHeight = proxy.size.height
+                        let contentWidth = max(viewportWidth, viewportWidth * zoomScale)
+                        let contentHeight = max(viewportHeight, viewportHeight * zoomScale)
+
+                        ScrollView([.horizontal, .vertical]) {
+                            let clampedSplit = min(max(splitPosition, 0.05), 0.95)
+                            let dividerX = contentWidth * clampedSplit
+
+                            ZStack(alignment: .leading) {
+                                comparisonImage(originalImage)
+
+                                if let processedImage {
+                                    comparisonImage(processedImage)
+                                        .mask(alignment: .leading) {
+                                            Rectangle()
+                                                .frame(width: dividerX)
+                                        }
+                                }
+
+                                Rectangle()
+                                    .fill(Color.white.opacity(0.92))
+                                    .frame(width: 2)
+                                    .shadow(color: .black.opacity(0.24), radius: 8)
+                                    .offset(x: dividerX - 1)
+
+                                comparisonHandle
+                                    .offset(x: dividerX - 26)
+                            }
+                            .frame(width: contentWidth, height: contentHeight)
+                            .contentShape(Rectangle())
+                            .gesture(
+                                DragGesture(minimumDistance: 0)
+                                    .onChanged { value in
+                                        guard contentWidth > 0 else {
+                                            return
+                                        }
+                                        splitPosition = min(max(value.location.x / contentWidth, 0.05), 0.95)
+                                    }
+                            )
+                        }
+                    }
+                } else {
+                    VStack(spacing: 10) {
+                        if isProcessing {
+                            ProgressView()
+                                .controlSize(.large)
+                        }
+                        Label("等待 preview", systemImage: "sparkles")
+                            .font(.headline)
+                        Text("切換 preset 或 strength 後會重新產生。")
+                            .font(.callout)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
+            .frame(maxWidth: .infinity, minHeight: 360, maxHeight: 460)
+            .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
+            .overlay(alignment: .topLeading) {
+                StatusBadge(title: "原圖", tint: .white)
+                    .padding(16)
+            }
+            .overlay(alignment: .topTrailing) {
+                StatusBadge(title: isProcessing ? "強化中…" : "強化後", tint: isProcessing ? .orange : .green)
+                    .padding(16)
+            }
+
+            Text("拖曳中線即可看修復前後差異；把倍率拉高後，可用捲動查看局部細節。左邊保留原圖，右邊顯示目前的 prototype output。")
+                .font(.callout)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .frame(maxWidth: .infinity, alignment: .topLeading)
+        .padding(18)
+        .background(Color.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 30, style: .continuous))
+    }
+
+    private func comparisonImage(_ image: NSImage) -> some View {
+        Image(nsImage: image)
+            .resizable()
+            .scaledToFit()
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .padding(18)
+    }
+
+    private var comparisonHandle: some View {
+        ZStack {
+            Capsule()
+                .fill(.ultraThinMaterial)
+                .frame(width: 52, height: 52)
+            Image(systemName: "arrow.left.and.right")
+                .font(.system(size: 18, weight: .bold))
+                .foregroundStyle(.white)
+        }
+        .shadow(color: .black.opacity(0.24), radius: 12, y: 6)
     }
 }
 
