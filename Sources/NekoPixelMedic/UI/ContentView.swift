@@ -663,6 +663,8 @@ private struct ModelLibraryRow: View {
 }
 
 private struct ComparisonStage: View {
+    private static let centerAnchorID = "comparison-center-anchor"
+
     let originalImage: NSImage?
     let processedImage: NSImage?
     let processedSubtitle: String
@@ -722,41 +724,54 @@ private struct ComparisonStage: View {
                         let contentWidth = max(viewportWidth, viewportWidth * zoomScale)
                         let contentHeight = max(viewportHeight, viewportHeight * zoomScale)
 
-                        ScrollView([.horizontal, .vertical]) {
-                            let clampedSplit = min(max(splitPosition, 0.05), 0.95)
-                            let dividerX = contentWidth * clampedSplit
+                        ScrollViewReader { scrollProxy in
+                            ScrollView([.horizontal, .vertical]) {
+                                let clampedSplit = min(max(splitPosition, 0.05), 0.95)
+                                let dividerX = contentWidth * clampedSplit
 
-                            ZStack(alignment: .leading) {
-                                comparisonImage(originalImage)
+                                ZStack(alignment: .leading) {
+                                    comparisonImage(originalImage)
 
-                                if let processedImage {
-                                    comparisonImage(processedImage)
-                                        .mask(alignment: .leading) {
-                                            Rectangle()
-                                                .frame(width: dividerX)
-                                        }
-                                }
-
-                                Rectangle()
-                                    .fill(Color.white.opacity(0.92))
-                                    .frame(width: 2)
-                                    .shadow(color: .black.opacity(0.24), radius: 8)
-                                    .offset(x: dividerX - 1)
-
-                                comparisonHandle
-                                    .offset(x: dividerX - 26)
-                            }
-                            .frame(width: contentWidth, height: contentHeight)
-                            .contentShape(Rectangle())
-                            .gesture(
-                                DragGesture(minimumDistance: 0)
-                                    .onChanged { value in
-                                        guard contentWidth > 0 else {
-                                            return
-                                        }
-                                        splitPosition = min(max(value.location.x / contentWidth, 0.05), 0.95)
+                                    if let processedImage {
+                                        comparisonImage(processedImage)
+                                            .mask(alignment: .leading) {
+                                                Rectangle()
+                                                    .frame(width: dividerX)
+                                            }
                                     }
-                            )
+
+                                    Rectangle()
+                                        .fill(Color.white.opacity(0.92))
+                                        .frame(width: 2)
+                                        .shadow(color: .black.opacity(0.24), radius: 8)
+                                        .offset(x: dividerX - 1)
+
+                                    comparisonHandle
+                                        .offset(x: dividerX - 26)
+
+                                    Color.clear
+                                        .frame(width: 1, height: 1)
+                                        .position(x: contentWidth / 2, y: contentHeight / 2)
+                                        .id(Self.centerAnchorID)
+                                }
+                                .frame(width: contentWidth, height: contentHeight, alignment: .center)
+                                .contentShape(Rectangle())
+                                .gesture(
+                                    DragGesture(minimumDistance: 0)
+                                        .onChanged { value in
+                                            guard contentWidth > 0 else {
+                                                return
+                                            }
+                                            splitPosition = min(max(value.location.x / contentWidth, 0.05), 0.95)
+                                        }
+                                )
+                            }
+                            .onAppear {
+                                recenter(scrollProxy)
+                            }
+                            .onChange(of: zoomScale) { _, _ in
+                                recenter(scrollProxy)
+                            }
                         }
                     }
                 } else {
@@ -812,6 +827,12 @@ private struct ComparisonStage: View {
                 .foregroundStyle(.white)
         }
         .shadow(color: .black.opacity(0.24), radius: 12, y: 6)
+    }
+
+    private func recenter(_ proxy: ScrollViewProxy) {
+        DispatchQueue.main.async {
+            proxy.scrollTo(Self.centerAnchorID, anchor: .center)
+        }
     }
 }
 
