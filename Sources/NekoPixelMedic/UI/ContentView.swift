@@ -4,18 +4,26 @@ struct ContentView: View {
     @Bindable var model: AppModel
 
     @State private var isDropTargeted = false
+    private let topContentInset: CGFloat = 44
 
     var body: some View {
-        ZStack {
-            AmbientBackdrop()
+        GeometryReader { proxy in
+            ZStack {
+                AmbientBackdrop()
 
-            HStack(alignment: .top, spacing: 20) {
-                leftRail
-                    .frame(width: 330)
+                HStack(alignment: .top, spacing: 20) {
+                    leftRail
+                        .frame(width: 330)
+                        .frame(maxHeight: .infinity, alignment: .top)
 
-                mainWorkspace
+                    mainWorkspace
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                }
+                .padding(.horizontal, 24)
+                .padding(.top, topContentInset)
+                .padding(.bottom, 24)
+                .frame(width: proxy.size.width, height: proxy.size.height, alignment: .topLeading)
             }
-            .padding(24)
         }
         .dropDestination(for: URL.self) { items, location in
             handleDrop(items: items, location: location)
@@ -32,12 +40,16 @@ struct ContentView: View {
     }
 
     private var leftRail: some View {
-        VStack(alignment: .leading, spacing: 18) {
-            heroCard
-            presetShelf
-            strengthCard
-            roadmapCard
+        ScrollView {
+            VStack(alignment: .leading, spacing: 18) {
+                heroCard
+                presetShelf
+                strengthCard
+                roadmapCard
+            }
+            .frame(maxWidth: .infinity, alignment: .topLeading)
         }
+        .scrollIndicators(.hidden)
     }
 
     private var mainWorkspace: some View {
