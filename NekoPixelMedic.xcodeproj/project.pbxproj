@@ -14,6 +14,7 @@
 		9927654B930077CF6FBF43A4 /* RepairPreset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B9ABAD7E9EE185A5AAFF670 /* RepairPreset.swift */; };
 		9BC9AA7E5BEE1F61FA1189F1 /* RepairPresetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BBB7A75784118B3F97F37B7 /* RepairPresetTests.swift */; };
 		CCD7A86641208546941261C6 /* ProcessedPhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = D38E7F596089543BE8C5CD8A /* ProcessedPhoto.swift */; };
+		E94822807B9B36DA3775A468 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5A96F9F6E070C4BA0B1C2E4E /* Assets.xcassets */; };
 		E97265A62E281404879052C9 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6C15EA994C77E4839D8D058 /* ContentView.swift */; };
 		F1C89CA8F3A68880EFFB7B01 /* RepairSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCD6D26696BFAA283BA4E267 /* RepairSettings.swift */; };
 /* End PBXBuildFile section */
@@ -30,6 +31,7 @@
 
 /* Begin PBXFileReference section */
 		1BBB7A75784118B3F97F37B7 /* RepairPresetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepairPresetTests.swift; sourceTree = "<group>"; };
+		5A96F9F6E070C4BA0B1C2E4E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		62AC944631C5B0B90F429D3E /* PrototypePhotoRepairService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrototypePhotoRepairService.swift; sourceTree = "<group>"; };
 		69CABFE404FEB91DAA1D952A /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
 		6B9ABAD7E9EE185A5AAFF670 /* RepairPreset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepairPreset.swift; sourceTree = "<group>"; };
@@ -49,6 +51,7 @@
 				5F31F87BC580122D78958CFE /* App */,
 				297DF8DCB948B6AD87991999 /* Domain */,
 				182BBCC2E0D7224CB8CB64F9 /* Infrastructure */,
+				386257C0988C10A151DA9076 /* Resources */,
 				BFBF5FC1320E2C70E4D099E3 /* UI */,
 			);
 			path = NekoPixelMedic;
@@ -71,6 +74,14 @@
 				DCD6D26696BFAA283BA4E267 /* RepairSettings.swift */,
 			);
 			path = Domain;
+			sourceTree = "<group>";
+		};
+		386257C0988C10A151DA9076 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				5A96F9F6E070C4BA0B1C2E4E /* Assets.xcassets */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		4C375BF81C20D666B9AC3269 /* NekoPixelMedicTests */ = {
@@ -140,6 +151,7 @@
 			buildConfigurationList = 61B48A1A3CD6D495F5D47256 /* Build configuration list for PBXNativeTarget "NekoPixelMedic" */;
 			buildPhases = (
 				502C7382B9E2E7EAEDB74DBE /* Sources */,
+				9CAFA1AE6FCD7FDD8A49CEA4 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -203,6 +215,17 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		9CAFA1AE6FCD7FDD8A49CEA4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E94822807B9B36DA3775A468 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		31F83F0C2A909B3E43D9CE56 /* Sources */ = {
