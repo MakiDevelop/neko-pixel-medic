@@ -1,0 +1,478 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		04DF0523F531199DA01E2C85 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69CABFE404FEB91DAA1D952A /* AppModel.swift */; };
+		07FF146476D72437ECA9352A /* PrototypePhotoRepairService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC944631C5B0B90F429D3E /* PrototypePhotoRepairService.swift */; };
+		278474AD625FDE9531AF8EDA /* NekoPixelMedicApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9134B757E6683DCD328D3B80 /* NekoPixelMedicApp.swift */; };
+		6B4A05E0A5B51DFC7854355D /* ImportedPhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0FE3812658C8C9F5699D947 /* ImportedPhoto.swift */; };
+		9927654B930077CF6FBF43A4 /* RepairPreset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B9ABAD7E9EE185A5AAFF670 /* RepairPreset.swift */; };
+		9BC9AA7E5BEE1F61FA1189F1 /* RepairPresetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BBB7A75784118B3F97F37B7 /* RepairPresetTests.swift */; };
+		CCD7A86641208546941261C6 /* ProcessedPhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = D38E7F596089543BE8C5CD8A /* ProcessedPhoto.swift */; };
+		E97265A62E281404879052C9 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6C15EA994C77E4839D8D058 /* ContentView.swift */; };
+		F1C89CA8F3A68880EFFB7B01 /* RepairSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCD6D26696BFAA283BA4E267 /* RepairSettings.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		2D0115909DC47FB7F72AF2C8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 23073416BC63B68A6FDFC4C1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 657CCCFCBC5585C647A3B90A;
+			remoteInfo = NekoPixelMedic;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		1BBB7A75784118B3F97F37B7 /* RepairPresetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepairPresetTests.swift; sourceTree = "<group>"; };
+		62AC944631C5B0B90F429D3E /* PrototypePhotoRepairService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrototypePhotoRepairService.swift; sourceTree = "<group>"; };
+		69CABFE404FEB91DAA1D952A /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
+		6B9ABAD7E9EE185A5AAFF670 /* RepairPreset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepairPreset.swift; sourceTree = "<group>"; };
+		9134B757E6683DCD328D3B80 /* NekoPixelMedicApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NekoPixelMedicApp.swift; sourceTree = "<group>"; };
+		A6C15EA994C77E4839D8D058 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		C0FE3812658C8C9F5699D947 /* ImportedPhoto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportedPhoto.swift; sourceTree = "<group>"; };
+		CD616684B9405E3C929EEB96 /* NekoPixelMedicTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NekoPixelMedicTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D38E7F596089543BE8C5CD8A /* ProcessedPhoto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessedPhoto.swift; sourceTree = "<group>"; };
+		DCD6D26696BFAA283BA4E267 /* RepairSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepairSettings.swift; sourceTree = "<group>"; };
+		F325927BB32B43B3EF451B42 /* NekoPixelMedic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NekoPixelMedic.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		00740C5A699629A14CECAB38 /* NekoPixelMedic */ = {
+			isa = PBXGroup;
+			children = (
+				5F31F87BC580122D78958CFE /* App */,
+				297DF8DCB948B6AD87991999 /* Domain */,
+				182BBCC2E0D7224CB8CB64F9 /* Infrastructure */,
+				BFBF5FC1320E2C70E4D099E3 /* UI */,
+			);
+			path = NekoPixelMedic;
+			sourceTree = "<group>";
+		};
+		182BBCC2E0D7224CB8CB64F9 /* Infrastructure */ = {
+			isa = PBXGroup;
+			children = (
+				62AC944631C5B0B90F429D3E /* PrototypePhotoRepairService.swift */,
+			);
+			path = Infrastructure;
+			sourceTree = "<group>";
+		};
+		297DF8DCB948B6AD87991999 /* Domain */ = {
+			isa = PBXGroup;
+			children = (
+				C0FE3812658C8C9F5699D947 /* ImportedPhoto.swift */,
+				D38E7F596089543BE8C5CD8A /* ProcessedPhoto.swift */,
+				6B9ABAD7E9EE185A5AAFF670 /* RepairPreset.swift */,
+				DCD6D26696BFAA283BA4E267 /* RepairSettings.swift */,
+			);
+			path = Domain;
+			sourceTree = "<group>";
+		};
+		4C375BF81C20D666B9AC3269 /* NekoPixelMedicTests */ = {
+			isa = PBXGroup;
+			children = (
+				1BBB7A75784118B3F97F37B7 /* RepairPresetTests.swift */,
+			);
+			path = NekoPixelMedicTests;
+			sourceTree = "<group>";
+		};
+		4D3D0CBEB717937741EAA5BA /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				00740C5A699629A14CECAB38 /* NekoPixelMedic */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		5F31F87BC580122D78958CFE /* App */ = {
+			isa = PBXGroup;
+			children = (
+				69CABFE404FEB91DAA1D952A /* AppModel.swift */,
+				9134B757E6683DCD328D3B80 /* NekoPixelMedicApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		6F0B07B697240BE24E9A8BD8 = {
+			isa = PBXGroup;
+			children = (
+				4D3D0CBEB717937741EAA5BA /* Sources */,
+				718FD9C5BC67A9DC7FA4A332 /* Tests */,
+				E9CF9C22345E77DA64CC39C0 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		718FD9C5BC67A9DC7FA4A332 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				4C375BF81C20D666B9AC3269 /* NekoPixelMedicTests */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		BFBF5FC1320E2C70E4D099E3 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				A6C15EA994C77E4839D8D058 /* ContentView.swift */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		E9CF9C22345E77DA64CC39C0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F325927BB32B43B3EF451B42 /* NekoPixelMedic.app */,
+				CD616684B9405E3C929EEB96 /* NekoPixelMedicTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		657CCCFCBC5585C647A3B90A /* NekoPixelMedic */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 61B48A1A3CD6D495F5D47256 /* Build configuration list for PBXNativeTarget "NekoPixelMedic" */;
+			buildPhases = (
+				502C7382B9E2E7EAEDB74DBE /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = NekoPixelMedic;
+			packageProductDependencies = (
+			);
+			productName = NekoPixelMedic;
+			productReference = F325927BB32B43B3EF451B42 /* NekoPixelMedic.app */;
+			productType = "com.apple.product-type.application";
+		};
+		A9E1EA4317A7B5BFD6BACE4E /* NekoPixelMedicTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0D88DA83BF18F494E75C3DBA /* Build configuration list for PBXNativeTarget "NekoPixelMedicTests" */;
+			buildPhases = (
+				31F83F0C2A909B3E43D9CE56 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4C4C94AFC7870E4D53C31359 /* PBXTargetDependency */,
+			);
+			name = NekoPixelMedicTests;
+			packageProductDependencies = (
+			);
+			productName = NekoPixelMedicTests;
+			productReference = CD616684B9405E3C929EEB96 /* NekoPixelMedicTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		23073416BC63B68A6FDFC4C1 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					657CCCFCBC5585C647A3B90A = {
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 2BC8580D77A1BC0892DEC70D /* Build configuration list for PBXProject "NekoPixelMedic" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 6F0B07B697240BE24E9A8BD8;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = E9CF9C22345E77DA64CC39C0 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				657CCCFCBC5585C647A3B90A /* NekoPixelMedic */,
+				A9E1EA4317A7B5BFD6BACE4E /* NekoPixelMedicTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		31F83F0C2A909B3E43D9CE56 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9BC9AA7E5BEE1F61FA1189F1 /* RepairPresetTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		502C7382B9E2E7EAEDB74DBE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				04DF0523F531199DA01E2C85 /* AppModel.swift in Sources */,
+				E97265A62E281404879052C9 /* ContentView.swift in Sources */,
+				6B4A05E0A5B51DFC7854355D /* ImportedPhoto.swift in Sources */,
+				278474AD625FDE9531AF8EDA /* NekoPixelMedicApp.swift in Sources */,
+				CCD7A86641208546941261C6 /* ProcessedPhoto.swift in Sources */,
+				07FF146476D72437ECA9352A /* PrototypePhotoRepairService.swift in Sources */,
+				9927654B930077CF6FBF43A4 /* RepairPreset.swift in Sources */,
+				F1C89CA8F3A68880EFFB7B01 /* RepairSettings.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		4C4C94AFC7870E4D53C31359 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 657CCCFCBC5585C647A3B90A /* NekoPixelMedic */;
+			targetProxy = 2D0115909DC47FB7F72AF2C8 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		0B6E615316F276E742307F64 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.maki.NekoPixelMedicTests;
+				SDKROOT = macosx;
+				SWIFT_VERSION = 6.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/NekoPixelMedic.app/Contents/MacOS/NekoPixelMedic";
+			};
+			name = Debug;
+		};
+		0F1A79F6A4F2A87140ADAC9C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		1FB22CCDACCBA119E9707758 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		55E8405420783FEC16871014 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = NekoPixelMedic;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.photography";
+				INFOPLIST_KEY_NSHighResolutionCapable = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.maki.NekoPixelMedic;
+				PRODUCT_MODULE_NAME = NekoPixelMedic;
+				PRODUCT_NAME = NekoPixelMedic;
+				SDKROOT = macosx;
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
+		80F1FEF93E49DCA85A12C734 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = NekoPixelMedic;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.photography";
+				INFOPLIST_KEY_NSHighResolutionCapable = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.maki.NekoPixelMedic;
+				PRODUCT_MODULE_NAME = NekoPixelMedic;
+				PRODUCT_NAME = NekoPixelMedic;
+				SDKROOT = macosx;
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		FF584B962D97443B57B9C693 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.maki.NekoPixelMedicTests;
+				SDKROOT = macosx;
+				SWIFT_VERSION = 6.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/NekoPixelMedic.app/Contents/MacOS/NekoPixelMedic";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		0D88DA83BF18F494E75C3DBA /* Build configuration list for PBXNativeTarget "NekoPixelMedicTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0B6E615316F276E742307F64 /* Debug */,
+				FF584B962D97443B57B9C693 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		2BC8580D77A1BC0892DEC70D /* Build configuration list for PBXProject "NekoPixelMedic" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1FB22CCDACCBA119E9707758 /* Debug */,
+				0F1A79F6A4F2A87140ADAC9C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		61B48A1A3CD6D495F5D47256 /* Build configuration list for PBXNativeTarget "NekoPixelMedic" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				80F1FEF93E49DCA85A12C734 /* Debug */,
+				55E8405420783FEC16871014 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 23073416BC63B68A6FDFC4C1 /* Project object */;
+}

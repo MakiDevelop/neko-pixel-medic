@@ -1,0 +1,51 @@
+name: NekoPixelMedic
+
+options:
+  deploymentTarget:
+    macOS: "14.0"
+  xcodeVersion: "16.0"
+  createIntermediateGroups: true
+
+targets:
+  NekoPixelMedic:
+    type: application
+    platform: macOS
+    deploymentTarget: "14.0"
+    sources:
+      - path: Sources/NekoPixelMedic
+    settings:
+      base:
+        PRODUCT_NAME: NekoPixelMedic
+        PRODUCT_MODULE_NAME: NekoPixelMedic
+        PRODUCT_BUNDLE_IDENTIFIER: com.maki.NekoPixelMedic
+        SWIFT_VERSION: "6.0"
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: NekoPixelMedic
+        INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.photography
+        INFOPLIST_KEY_NSHighResolutionCapable: YES
+        CODE_SIGN_STYLE: Automatic
+
+  NekoPixelMedicTests:
+    type: bundle.unit-test
+    platform: macOS
+    deploymentTarget: "14.0"
+    sources:
+      - path: Tests/NekoPixelMedicTests
+    dependencies:
+      - target: NekoPixelMedic
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.maki.NekoPixelMedicTests
+        GENERATE_INFOPLIST_FILE: YES
+        SWIFT_VERSION: "6.0"
+
+schemes:
+  NekoPixelMedic:
+    build:
+      targets:
+        NekoPixelMedic: all
+    test:
+      targets:
+        - NekoPixelMedicTests
+    run:
+      config: Debug
