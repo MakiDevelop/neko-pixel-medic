@@ -9,7 +9,10 @@
 /* Begin PBXBuildFile section */
 		04DF0523F531199DA01E2C85 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69CABFE404FEB91DAA1D952A /* AppModel.swift */; };
 		07FF146476D72437ECA9352A /* PrototypePhotoRepairService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC944631C5B0B90F429D3E /* PrototypePhotoRepairService.swift */; };
+		12547C972B5A4BCBB0DACF24 /* ModelCatalogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 400B6E605E192ADB9CC25424 /* ModelCatalogTests.swift */; };
 		278474AD625FDE9531AF8EDA /* NekoPixelMedicApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9134B757E6683DCD328D3B80 /* NekoPixelMedicApp.swift */; };
+		3D76E59839F878A99410414C /* ModelCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 631ECE88C7E36652408921BC /* ModelCatalog.swift */; };
+		3E4884665485493604CD0BC6 /* ModelDownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68AE88DF20E7534CD1E772A1 /* ModelDownloadManager.swift */; };
 		6B4A05E0A5B51DFC7854355D /* ImportedPhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0FE3812658C8C9F5699D947 /* ImportedPhoto.swift */; };
 		9927654B930077CF6FBF43A4 /* RepairPreset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B9ABAD7E9EE185A5AAFF670 /* RepairPreset.swift */; };
 		9BC9AA7E5BEE1F61FA1189F1 /* RepairPresetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BBB7A75784118B3F97F37B7 /* RepairPresetTests.swift */; };
@@ -17,6 +20,7 @@
 		E94822807B9B36DA3775A468 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5A96F9F6E070C4BA0B1C2E4E /* Assets.xcassets */; };
 		E97265A62E281404879052C9 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6C15EA994C77E4839D8D058 /* ContentView.swift */; };
 		F1C89CA8F3A68880EFFB7B01 /* RepairSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCD6D26696BFAA283BA4E267 /* RepairSettings.swift */; };
+		F77D09CD1CF55C6D1665B8DE /* ModelStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E4536ACE158BE76DE0447A /* ModelStore.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -31,11 +35,15 @@
 
 /* Begin PBXFileReference section */
 		1BBB7A75784118B3F97F37B7 /* RepairPresetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepairPresetTests.swift; sourceTree = "<group>"; };
+		400B6E605E192ADB9CC25424 /* ModelCatalogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelCatalogTests.swift; sourceTree = "<group>"; };
 		5A96F9F6E070C4BA0B1C2E4E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		62AC944631C5B0B90F429D3E /* PrototypePhotoRepairService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrototypePhotoRepairService.swift; sourceTree = "<group>"; };
+		631ECE88C7E36652408921BC /* ModelCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelCatalog.swift; sourceTree = "<group>"; };
+		68AE88DF20E7534CD1E772A1 /* ModelDownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelDownloadManager.swift; sourceTree = "<group>"; };
 		69CABFE404FEB91DAA1D952A /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
 		6B9ABAD7E9EE185A5AAFF670 /* RepairPreset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepairPreset.swift; sourceTree = "<group>"; };
 		9134B757E6683DCD328D3B80 /* NekoPixelMedicApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NekoPixelMedicApp.swift; sourceTree = "<group>"; };
+		99E4536ACE158BE76DE0447A /* ModelStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelStore.swift; sourceTree = "<group>"; };
 		A6C15EA994C77E4839D8D058 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		C0FE3812658C8C9F5699D947 /* ImportedPhoto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportedPhoto.swift; sourceTree = "<group>"; };
 		CD616684B9405E3C929EEB96 /* NekoPixelMedicTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NekoPixelMedicTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -60,6 +68,8 @@
 		182BBCC2E0D7224CB8CB64F9 /* Infrastructure */ = {
 			isa = PBXGroup;
 			children = (
+				68AE88DF20E7534CD1E772A1 /* ModelDownloadManager.swift */,
+				99E4536ACE158BE76DE0447A /* ModelStore.swift */,
 				62AC944631C5B0B90F429D3E /* PrototypePhotoRepairService.swift */,
 			);
 			path = Infrastructure;
@@ -69,6 +79,7 @@
 			isa = PBXGroup;
 			children = (
 				C0FE3812658C8C9F5699D947 /* ImportedPhoto.swift */,
+				631ECE88C7E36652408921BC /* ModelCatalog.swift */,
 				D38E7F596089543BE8C5CD8A /* ProcessedPhoto.swift */,
 				6B9ABAD7E9EE185A5AAFF670 /* RepairPreset.swift */,
 				DCD6D26696BFAA283BA4E267 /* RepairSettings.swift */,
@@ -87,6 +98,7 @@
 		4C375BF81C20D666B9AC3269 /* NekoPixelMedicTests */ = {
 			isa = PBXGroup;
 			children = (
+				400B6E605E192ADB9CC25424 /* ModelCatalogTests.swift */,
 				1BBB7A75784118B3F97F37B7 /* RepairPresetTests.swift */,
 			);
 			path = NekoPixelMedicTests;
@@ -232,6 +244,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				12547C972B5A4BCBB0DACF24 /* ModelCatalogTests.swift in Sources */,
 				9BC9AA7E5BEE1F61FA1189F1 /* RepairPresetTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -243,6 +256,9 @@
 				04DF0523F531199DA01E2C85 /* AppModel.swift in Sources */,
 				E97265A62E281404879052C9 /* ContentView.swift in Sources */,
 				6B4A05E0A5B51DFC7854355D /* ImportedPhoto.swift in Sources */,
+				3D76E59839F878A99410414C /* ModelCatalog.swift in Sources */,
+				3E4884665485493604CD0BC6 /* ModelDownloadManager.swift in Sources */,
+				F77D09CD1CF55C6D1665B8DE /* ModelStore.swift in Sources */,
 				278474AD625FDE9531AF8EDA /* NekoPixelMedicApp.swift in Sources */,
 				CCD7A86641208546941261C6 /* ProcessedPhoto.swift in Sources */,
 				07FF146476D72437ECA9352A /* PrototypePhotoRepairService.swift in Sources */,

@@ -45,6 +45,7 @@ struct ContentView: View {
                 heroCard
                 presetShelf
                 strengthCard
+                modelLibraryCard
                 roadmapCard
             }
             .frame(maxWidth: .infinity, alignment: .topLeading)
@@ -189,7 +190,37 @@ struct ContentView: View {
 
                 RoadmapRow(title: "Face Restoration", detail: "GFPGAN / CodeFormer + 局部人臉區域處理")
                 RoadmapRow(title: "Batch Queue", detail: "多張照片排程、失敗重試、背景處理")
-                RoadmapRow(title: "Model Downloads", detail: "按需下載 Real-ESRGAN / 社群模型")
+                RoadmapRow(title: "Model Downloads", detail: "第一版 manifest / store / downloader 已接上，下一步把推論 backend 換過去")
+            }
+        }
+    }
+
+    private var modelLibraryCard: some View {
+        GlassPanel(tint: Color(red: 0.83, green: 0.68, blue: 0.22).opacity(0.22), cornerRadius: 30) {
+            VStack(alignment: .leading, spacing: 16) {
+                SectionHeader(
+                    eyebrow: "Models",
+                    title: "模型下載器",
+                    subtitle: "先把權重下載、落地路徑、安裝狀態做起來。這一輪先不直接切推論。"
+                )
+
+                HStack(spacing: 10) {
+                    StatusBadge(title: "\(model.installedModelCount)/\(model.modelLibrary.count) 已安裝", tint: .white)
+                    ActionPill(
+                        title: "打開模型資料夾",
+                        systemImage: "folder",
+                        style: .secondary,
+                        action: model.revealModelLibraryFolder
+                    )
+                }
+
+                ForEach(model.modelLibrary) { item in
+                    ModelLibraryRow(
+                        item: item,
+                        hasActiveDownload: model.activeModelDownloadID != nil,
+                        action: { model.downloadModel(item.model) }
+                    )
+                }
             }
         }
     }
@@ -600,6 +631,85 @@ private struct RoadmapRow: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(14)
         .background(Color.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+    }
+}
+
+private struct ModelLibraryRow: View {
+    let item: ModelLibraryItem
+    let hasActiveDownload: Bool
+    let action: () -> Void
+
+    private var actionDisabled: Bool {
+        if !item.canStartDownload {
+            return true
+        }
+
+        return hasActiveDownload
+    }
+
+    private var stateTint: Color {
+        switch item.state {
+        case .notInstalled:
+            return .white
+        case .downloading:
+            return .orange
+        case .installed:
+            return .green
+        case .failed:
+            return .red
+        }
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .top, spacing: 12) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(item.model.displayName)
+                        .font(.headline)
+                    Text(item.model.summary)
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+
+                Spacer(minLength: 12)
+
+                ActionPill(
+                    title: item.actionTitle,
+                    systemImage: item.canStartDownload ? "arrow.down.circle" : "checkmark.circle",
+                    style: item.canStartDownload ? .primary : .secondary,
+                    action: action,
+                    isDisabled: actionDisabled
+                )
+            }
+
+            HStack(spacing: 8) {
+                StatusBadge(title: item.stateLabel, tint: stateTint)
+                Text(item.model.roleSummary)
+                    .font(.system(size: 11, weight: .semibold, design: .rounded))
+                    .foregroundStyle(.secondary)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 6)
+                    .background(Color.white.opacity(0.1), in: Capsule())
+            }
+
+            if case let .downloading(progress) = item.state {
+                ProgressView(value: progress ?? 0)
+                    .progressViewStyle(.linear)
+                    .tint(.orange)
+            }
+
+            Text(item.detailLine)
+                .font(.system(size: 12, weight: .medium, design: .rounded))
+                .foregroundStyle(.secondary)
+
+            Label(item.model.sourceName, systemImage: "shippingbox")
+                .font(.system(size: 12, weight: .medium, design: .rounded))
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(14)
+        .background(Color.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 22, style: .continuous))
     }
 }
 

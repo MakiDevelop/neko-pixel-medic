@@ -11,14 +11,31 @@ final class AppModel {
     var processedData: Data?
     var processedPixelSize: CGSize?
     var renderNotes: [String] = []
+    var modelLibrary: [ModelLibraryItem] = []
     var selectedPreset: RepairPreset = .restore
     var strength: Double = 0.68
     var isProcessing = false
+    var activeModelDownloadID: String?
     var statusMessage = "拖一張受傷照片進來，先把第一版 prototype 跑起來。"
     var lastExportURL: URL?
 
+    private let availableModels: [DownloadableModel]
+    private let modelStore: ModelStore
+    private let modelDownloadManager: ModelDownloadManager
     private var debounceTask: Task<Void, Never>?
+    private var modelDownloadTask: Task<Void, Never>?
     private var renderTask: Task<Void, Never>?
+
+    init(
+        availableModels: [DownloadableModel] = DownloadableModel.builtIn,
+        modelStore: ModelStore = ModelStore(),
+        modelDownloadManager: ModelDownloadManager = ModelDownloadManager()
+    ) {
+        self.availableModels = availableModels
+        self.modelStore = modelStore
+        self.modelDownloadManager = modelDownloadManager
+        refreshModelLibrary()
+    }
 
     var originalImage: NSImage? {
         importedPhoto?.previewImage
@@ -34,6 +51,15 @@ final class AppModel {
 
     var canExport: Bool {
         processedData != nil
+    }
+
+    var installedModelCount: Int {
+        modelLibrary.filter { item in
+            if case .installed = item.state {
+                return true
+            }
+            return false
+        }.count
     }
 
     func importPhoto() {
@@ -151,6 +177,57 @@ final class AppModel {
         NSWorkspace.shared.activateFileViewerSelecting([url])
     }
 
+    func downloadModel(_ model: DownloadableModel) {
+        guard activeModelDownloadID == nil else {
+            statusMessage = "目前已有模型在下載，先等這一個完成。"
+            return
+        }
+
+        activeModelDownloadID = model.id
+        updateModelState(.downloading(progress: 0), forModelID: model.id)
+        statusMessage = "正在下載 \(model.displayName)…"
+
+        modelDownloadTask?.cancel()
+        modelDownloadTask = Task { [weak self] in
+            guard let self else {
+                return
+            }
+
+            do {
+                try await modelDownloadManager.download(model: model, into: modelStore) { [weak self] progress in
+                    Task { @MainActor [weak self] in
+                        self?.updateModelState(.downloading(progress: progress.fractionCompleted), forModelID: model.id)
+                    }
+                }
+
+                guard !Task.isCancelled else {
+                    return
+                }
+
+                refreshModelLibrary()
+                activeModelDownloadID = nil
+                statusMessage = "已安裝 \(model.displayName)。下一步只剩把推論 backend 接上。"
+            } catch {
+                guard !Task.isCancelled else {
+                    return
+                }
+
+                activeModelDownloadID = nil
+                updateModelState(.failed(message: "下載失敗"), forModelID: model.id)
+                statusMessage = "模型下載失敗：\(error.localizedDescription)"
+            }
+        }
+    }
+
+    func revealModelLibraryFolder() {
+        do {
+            let rootURL = try modelStore.revealRootDirectory()
+            NSWorkspace.shared.activateFileViewerSelecting([rootURL])
+        } catch {
+            statusMessage = "無法打開模型資料夾：\(error.localizedDescription)"
+        }
+    }
+
     private func loadPhoto(from url: URL) {
         do {
             let photo = try ImportedPhoto.load(from: url)
@@ -190,6 +267,22 @@ final class AppModel {
     private func defaultExportName(for sourceURL: URL) -> String {
         let baseName = sourceURL.deletingPathExtension().lastPathComponent
         return "\(baseName)-\(selectedPreset.rawValue).png"
+    }
+
+    private func refreshModelLibrary() {
+        let previousStates = Dictionary(uniqueKeysWithValues: modelLibrary.map { ($0.id, $0.state) })
+        modelLibrary = availableModels.map { model in
+            modelStore.item(for: model, state: previousStates[model.id] ?? .notInstalled)
+        }
+    }
+
+    private func updateModelState(_ state: ModelInstallState, forModelID id: String) {
+        guard let index = modelLibrary.firstIndex(where: { $0.id == id }) else {
+            refreshModelLibrary()
+            return
+        }
+
+        modelLibrary[index].state = state
     }
 
     private static func isSupportedImageURL(_ url: URL) -> Bool {
