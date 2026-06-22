@@ -42,4 +42,11 @@ final class ModelCatalogTests: XCTestCase {
         XCTAssertEqual(item.installedBytes, 4)
         XCTAssertEqual(item.state, .installed)
     }
+
+    func testPhotoRepairServiceProtocolIsImplementedByPrototype() {
+        let service: PhotoRepairService = PrototypePhotoRepairService()
+        // Just verify it conforms and can be called (will fail on bad file, which is expected)
+        let badURL = URL(fileURLWithPath: "/nonexistent.jpg")
+        XCTAssertThrowsError(try service.processPhoto(at: badURL, settings: RepairSettings(preset: .restore, strength: 0.5)))
+    }
 }
