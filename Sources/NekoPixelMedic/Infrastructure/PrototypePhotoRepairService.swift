@@ -123,6 +123,7 @@ enum PhotoRepairError: LocalizedError {
     case unsupportedFile(URL)
     case renderFailed
     case encodeFailed
+    case mlModelNotReady(String)
 
     var errorDescription: String? {
         switch self {
@@ -132,6 +133,8 @@ enum PhotoRepairError: LocalizedError {
             return "產生修復 preview 失敗。"
         case .encodeFailed:
             return "輸出 PNG 失敗。"
+        case let .mlModelNotReady(reason):
+            return "ML 模型尚未準備好：\(reason)。請先使用 coremltools 將下載的 .pth 轉換為 Core ML 模型 (.mlmodelc 或 .mlpackage)，並放置在模型目錄中。"
         }
     }
 }
