@@ -48,6 +48,7 @@ struct ContentView: View {
                 presetShelf
                 strengthCard
                 modelLibraryCard
+                batchCard
                 roadmapCard
             }
             .frame(maxWidth: .infinity, alignment: .topLeading)
@@ -222,6 +223,59 @@ struct ContentView: View {
                         hasActiveDownload: model.activeModelDownloadID != nil,
                         action: { model.downloadModel(item.model) }
                     )
+                }
+            }
+        }
+    }
+
+    private var batchCard: some View {
+        GlassPanel(tint: Color(red: 0.4, green: 0.6, blue: 0.9).opacity(0.22), cornerRadius: 30) {
+            VStack(alignment: .leading, spacing: 12) {
+                SectionHeader(
+                    eyebrow: "Batch",
+                    title: "批次處理",
+                    subtitle: "拖多張圖或用按鈕加入。支援一次處理多張（prototype）。"
+                )
+
+                HStack {
+                    Text("Queue: \(model.batchQueue.count)")
+                        .font(.callout)
+                    Spacer()
+                    if model.isBatchProcessing {
+                        ProgressView(value: model.batchProgress)
+                            .frame(width: 80)
+                        Text("\(Int(model.batchProgress * 100))%")
+                            .font(.caption)
+                    }
+                }
+
+                HStack(spacing: 8) {
+                    Button("加入目前照片") {
+                        if let url = model.importedPhoto?.url {
+                            model.addToBatch(url: url)
+                        }
+                    }
+                    .disabled(model.importedPhoto == nil)
+
+                    Button("清空批次") {
+                        model.clearBatch()
+                    }
+                    .disabled(model.batchQueue.isEmpty && !model.isBatchProcessing)
+
+                    Button(model.isBatchProcessing ? "處理中..." : "處理批次") {
+                        model.processBatch()
+                    }
+                    .disabled(model.batchQueue.isEmpty || model.isBatchProcessing)
+                    .buttonStyle(.borderedProminent)
+                    .tint(.blue)
+                }
+                .font(.caption)
+
+                if !model.batchQueue.isEmpty {
+                    Text(model.batchQueue.prefix(3).map(\.shortName).joined(separator: ", ") + (model.batchQueue.count > 3 ? "..." : ""))
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
                 }
             }
         }
