@@ -65,6 +65,7 @@ private final class ArtifactDownloader: NSObject, URLSessionDownloadDelegate, @u
     private var continuation: CheckedContinuation<Void, Error>?
     private var progressHandler: (@Sendable (Double?) -> Void)?
     private var session: URLSession?
+    private var downloadTask: URLSessionDownloadTask?
 
     init(destinationURL: URL) {
         self.destinationURL = destinationURL
@@ -85,14 +86,23 @@ private final class ArtifactDownloader: NSObject, URLSessionDownloadDelegate, @u
         self.session = session
 
         defer {
+            downloadTask?.cancel()
             session.invalidateAndCancel()
             self.session = nil
+            self.downloadTask = nil
             self.progressHandler = nil
         }
 
-        try await withCheckedThrowingContinuation { continuation in
-            self.continuation = continuation
-            session.downloadTask(with: remoteURL).resume()
+        try await withTaskCancellationHandler {
+            try await withCheckedThrowingContinuation { continuation in
+                self.continuation = continuation
+                let task = session.downloadTask(with: remoteURL)
+                self.downloadTask = task
+                task.resume()
+            }
+        } onCancel: {
+            downloadTask?.cancel()
+            session.invalidateAndCancel()
         }
     }
 

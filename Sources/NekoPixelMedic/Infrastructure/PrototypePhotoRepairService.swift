@@ -5,6 +5,12 @@ import ImageIO
 import UniformTypeIdentifiers
 
 struct PrototypePhotoRepairService {
+    private let context: CIContext
+
+    init(context: CIContext = CIContext()) {
+        self.context = context
+    }
+
     func processPhoto(at url: URL, settings: RepairSettings) throws -> ProcessedPhoto {
         guard let imageSource = CGImageSourceCreateWithURL(url as CFURL, nil),
               let cgImage = CGImageSourceCreateImageAtIndex(imageSource, 0, nil)
@@ -12,7 +18,6 @@ struct PrototypePhotoRepairService {
             throw PhotoRepairError.unsupportedFile(url)
         }
 
-        let context = CIContext()
         let plan = settings.preset.makePlan(strength: settings.strength)
         let processedImage = plan.passes.reduce(CIImage(cgImage: cgImage)) { image, pass in
             apply(pass, to: image)
