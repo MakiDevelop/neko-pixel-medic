@@ -24,6 +24,15 @@ final class AppModel {
     var isBatchProcessing = false
     var batchProgress: Double = 0
 
+    // Toggle to experiment with ML stub (real inference not wired yet)
+    var useMLBackend: Bool = false {
+        didSet {
+            statusMessage = useMLBackend 
+                ? "Using MLPhotoRepairService stub (falls back to prototype until models converted)"
+                : "Using prototype CI backend"
+        }
+    }
+
     private let availableModels: [DownloadableModel]
     private let modelStore: ModelStore
     private let modelDownloadManager: ModelDownloadManager
@@ -32,6 +41,13 @@ final class AppModel {
     private var modelDownloadTask: Task<Void, Never>?
     private var renderTask: Task<Void, Never>?
     private var batchTask: Task<Void, Never>?
+
+    private var currentRepairService: PhotoRepairService {
+        if useMLBackend {
+            return MLPhotoRepairService(fallback: repairService as? PrototypePhotoRepairService ?? PrototypePhotoRepairService())
+        }
+        return repairService
+    }
 
     init(
         availableModels: [DownloadableModel] = DownloadableModel.builtIn,
@@ -78,25 +94,37 @@ final class AppModel {
     func importPhoto() {
         let panel = NSOpenPanel()
         panel.allowedContentTypes = [.image]
-        panel.allowsMultipleSelection = false
+        panel.allowsMultipleSelection = true
         panel.canChooseDirectories = false
         panel.canChooseFiles = true
-        panel.prompt = "載入"
+        panel.prompt = "載入 (可多選加入批次)"
 
-        guard panel.runModal() == .OK, let url = panel.url else {
+        guard panel.runModal() == .OK, !panel.urls.isEmpty else {
             return
         }
 
-        loadPhoto(from: url)
+        let first = panel.urls.first!
+        loadPhoto(from: first)
+
+        for url in panel.urls {
+            addToBatch(url: url)
+        }
     }
 
     func handleDroppedFiles(_ urls: [URL]) {
-        guard let firstSupportedImage = urls.first(where: Self.isSupportedImageURL) else {
+        let supported = urls.filter(Self.isSupportedImageURL)
+        guard !supported.isEmpty else {
             statusMessage = "拖進來的內容不是支援的圖片格式。"
             return
         }
 
-        loadPhoto(from: firstSupportedImage)
+        // Load first for immediate preview
+        loadPhoto(from: supported[0])
+
+        // Add remaining (and first if want) to batch
+        for url in supported {
+            addToBatch(url: url)
+        }
     }
 
     func selectPreset(_ preset: RepairPreset) {
@@ -129,7 +157,7 @@ final class AppModel {
 
                 // Use non-detached Task so parent cancellation can propagate
                 let result = try await Task(priority: .userInitiated) {
-                    try repairService.processPhoto(at: url, settings: settings)
+                    try currentRepairService.processPhoto(at: url, settings: settings)
                 }.value
 
                 try Task.checkCancellation()
@@ -357,7 +385,7 @@ final class AppModel {
                     let photoURL = photo.url
                     let settings = currentSettings
                     let result = try await Task(priority: .userInitiated) {
-                        try repairService.processPhoto(at: photoURL, settings: settings)
+                        try currentRepairService.processPhoto(at: photoURL, settings: settings)
                     }.value
 
                     // For now, we just count success (full batch result storage can be expanded)
