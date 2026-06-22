@@ -272,10 +272,49 @@ struct ContentView: View {
                 .font(.caption)
 
                 if !model.batchQueue.isEmpty {
-                    Text(model.batchQueue.prefix(3).map(\.shortName).joined(separator: ", ") + (model.batchQueue.count > 3 ? "..." : ""))
+                    Text("批次清單：")
                         .font(.caption2)
                         .foregroundStyle(.secondary)
-                        .lineLimit(1)
+
+                    ForEach(model.batchQueue) { item in
+                        HStack {
+                            Text(item.photo.shortName)
+                                .font(.caption)
+                                .lineLimit(1)
+
+                            Spacer()
+
+                            if let err = item.errorMessage {
+                                Text("❌ \(err)")
+                                    .font(.caption2)
+                                    .foregroundStyle(.red)
+                                    .lineLimit(1)
+                            } else if item.result != nil {
+                                Text("✅ 已處理")
+                                    .font(.caption2)
+                                    .foregroundStyle(.green)
+                            } else {
+                                Text("待處理")
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                            }
+
+                            if item.result != nil {
+                                Button("預覽") {
+                                    // Simple: load the result into current preview
+                                    if let res = item.result {
+                                        model.processedImage = NSImage(data: res.previewData)
+                                        model.processedData = res.previewData
+                                        model.processedPixelSize = res.pixelSize
+                                        model.renderNotes = res.notes
+                                        model.statusMessage = "預覽批次項目：\(item.photo.shortName)"
+                                    }
+                                }
+                                .font(.caption2)
+                            }
+                        }
+                        .padding(.vertical, 2)
+                    }
                 }
             }
         }

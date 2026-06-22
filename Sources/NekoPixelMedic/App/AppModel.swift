@@ -20,7 +20,14 @@ final class AppModel {
     var lastExportURL: URL?
 
     // Batch processing support (initial implementation)
-    var batchQueue: [ImportedPhoto] = []
+    struct BatchItem: Identifiable {
+        let id = UUID()
+        let photo: ImportedPhoto
+        var result: ProcessedPhoto?
+        var errorMessage: String?
+    }
+
+    var batchQueue: [BatchItem] = []
     var isBatchProcessing = false
     var batchProgress: Double = 0
 
@@ -28,8 +35,8 @@ final class AppModel {
     var useMLBackend: Bool = false {
         didSet {
             statusMessage = useMLBackend 
-                ? "Using MLPhotoRepairService stub (falls back to prototype until models converted)"
-                : "Using prototype CI backend"
+                ? "使用 MLPhotoRepairService（真實 CoreML 載入中，模型未轉換前會報錯）"
+                : "使用 prototype CI backend"
         }
     }
 
@@ -44,7 +51,7 @@ final class AppModel {
 
     private var currentRepairService: PhotoRepairService {
         if useMLBackend {
-            return MLPhotoRepairService(fallback: repairService as? PrototypePhotoRepairService ?? PrototypePhotoRepairService())
+            return MLPhotoRepairService(modelStore: modelStore)
         }
         return repairService
     }
@@ -62,9 +69,8 @@ final class AppModel {
         refreshModelLibrary()
     }
 
-    // Future: when real models are installed (after .pth -> CoreML conversion),
-    // we can inject MLPhotoRepairService() that uses VNCoreMLRequest or direct prediction
-    // based on selectedPreset and installed models. Prototype remains fallback.
+    // Real ML: inject MLPhotoRepairService(modelStore: ...) when .pth converted to CoreML.
+    // Set useMLBackend = true to activate (will error until models ready).
 
     var originalImage: NSImage? {
         importedPhoto?.previewImage
@@ -343,8 +349,8 @@ final class AppModel {
     func addToBatch(url: URL) {
         do {
             let photo = try ImportedPhoto.load(from: url)
-            if !batchQueue.contains(where: { $0.url == url }) {
-                batchQueue.append(photo)
+            if !batchQueue.contains(where: { $0.photo.url == url }) {
+                batchQueue.append(BatchItem(photo: photo))
                 statusMessage = "已加入批次：\(photo.shortName)（共 \(batchQueue.count) 張）"
             }
         } catch {
@@ -371,16 +377,17 @@ final class AppModel {
         batchProgress = 0
         statusMessage = "開始批次處理 \(batchQueue.count) 張照片..."
 
-        let queueCopy = batchQueue
-        let total = Double(queueCopy.count)
+        let total = Double(batchQueue.count)
         let currentSettings = RepairSettings(preset: selectedPreset, strength: strength)
 
-        batchTask = Task { [repairService] in
+        // Capture indices and update in place safely
+        batchTask = Task { [currentRepairService] in
             var processedCount = 0
 
-            for photo in queueCopy {
+            for index in batchQueue.indices {
                 guard !Task.isCancelled else { break }
 
+                let photo = batchQueue[index].photo
                 do {
                     let photoURL = photo.url
                     let settings = currentSettings
@@ -388,22 +395,29 @@ final class AppModel {
                         try currentRepairService.processPhoto(at: photoURL, settings: settings)
                     }.value
 
-                    // For now, we just count success (full batch result storage can be expanded)
-                    processedCount += 1
-                    let progress = Double(processedCount) / total
                     await MainActor.run {
-                        batchProgress = progress
-                        statusMessage = "批次處理中：\(processedCount)/\(queueCopy.count)"
+                        batchQueue[index].result = result
+                        batchQueue[index].errorMessage = nil
                     }
                 } catch {
-                    processedCount += 1
+                    await MainActor.run {
+                        batchQueue[index].errorMessage = error.localizedDescription
+                        batchQueue[index].result = nil
+                    }
+                }
+
+                processedCount += 1
+                let progress = Double(processedCount) / total
+                await MainActor.run {
+                    batchProgress = progress
+                    statusMessage = "批次處理中：\(processedCount)/\(batchQueue.count)"
                 }
             }
 
             await MainActor.run {
                 isBatchProcessing = false
                 batchProgress = 1.0
-                statusMessage = "批次完成 \(processedCount)/\(queueCopy.count) 張"
+                statusMessage = "批次完成 \(processedCount)/\(batchQueue.count) 張"
             }
         }
     }
