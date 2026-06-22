@@ -19,23 +19,36 @@ final class AppModel {
     var statusMessage = "拖一張受傷照片進來，先把第一版 prototype 跑起來。"
     var lastExportURL: URL?
 
+    // Batch processing support (initial implementation)
+    var batchQueue: [ImportedPhoto] = []
+    var isBatchProcessing = false
+    var batchProgress: Double = 0
+
     private let availableModels: [DownloadableModel]
     private let modelStore: ModelStore
     private let modelDownloadManager: ModelDownloadManager
+    private let repairService: PhotoRepairService
     private var debounceTask: Task<Void, Never>?
     private var modelDownloadTask: Task<Void, Never>?
     private var renderTask: Task<Void, Never>?
+    private var batchTask: Task<Void, Never>?
 
     init(
         availableModels: [DownloadableModel] = DownloadableModel.builtIn,
         modelStore: ModelStore = ModelStore(),
-        modelDownloadManager: ModelDownloadManager = ModelDownloadManager()
+        modelDownloadManager: ModelDownloadManager = ModelDownloadManager(),
+        repairService: PhotoRepairService = PrototypePhotoRepairService()
     ) {
         self.availableModels = availableModels
         self.modelStore = modelStore
         self.modelDownloadManager = modelDownloadManager
+        self.repairService = repairService
         refreshModelLibrary()
     }
+
+    // Future: when real models are installed (after .pth -> CoreML conversion),
+    // we can inject MLPhotoRepairService() that uses VNCoreMLRequest or direct prediction
+    // based on selectedPreset and installed models. Prototype remains fallback.
 
     var originalImage: NSImage? {
         importedPhoto?.previewImage
@@ -110,13 +123,13 @@ final class AppModel {
         let url = importedPhoto.url
         let settings = RepairSettings(preset: selectedPreset, strength: strength)
 
-        renderTask = Task { [selectedPreset] in
+        renderTask = Task { [selectedPreset, repairService] in
             do {
                 try Task.checkCancellation()
 
                 // Use non-detached Task so parent cancellation can propagate
                 let result = try await Task(priority: .userInitiated) {
-                    try PrototypePhotoRepairService().processPhoto(at: url, settings: settings)
+                    try repairService.processPhoto(at: url, settings: settings)
                 }.value
 
                 try Task.checkCancellation()
@@ -295,5 +308,75 @@ final class AppModel {
         }
 
         return values.contentType?.conforms(to: .image) == true
+    }
+
+    // MARK: - Batch processing (prototype)
+
+    func addToBatch(url: URL) {
+        do {
+            let photo = try ImportedPhoto.load(from: url)
+            if !batchQueue.contains(where: { $0.url == url }) {
+                batchQueue.append(photo)
+                statusMessage = "已加入批次：\(photo.shortName)（共 \(batchQueue.count) 張）"
+            }
+        } catch {
+            statusMessage = error.localizedDescription
+        }
+    }
+
+    func clearBatch() {
+        batchTask?.cancel()
+        batchQueue.removeAll()
+        isBatchProcessing = false
+        batchProgress = 0
+        statusMessage = "批次已清空"
+    }
+
+    func processBatch() {
+        guard !batchQueue.isEmpty else {
+            statusMessage = "批次為空"
+            return
+        }
+
+        batchTask?.cancel()
+        isBatchProcessing = true
+        batchProgress = 0
+        statusMessage = "開始批次處理 \(batchQueue.count) 張照片..."
+
+        let queueCopy = batchQueue
+        let total = Double(queueCopy.count)
+        let currentSettings = RepairSettings(preset: selectedPreset, strength: strength)
+
+        batchTask = Task { [repairService] in
+            var processedCount = 0
+
+            for photo in queueCopy {
+                guard !Task.isCancelled else { break }
+
+                do {
+                    let photoURL = photo.url
+                    let settings = currentSettings
+                    let result = try await Task(priority: .userInitiated) {
+                        try repairService.processPhoto(at: photoURL, settings: settings)
+                    }.value
+
+                    // For now, we just count success (full batch result storage can be expanded)
+                    processedCount += 1
+                    let progress = Double(processedCount) / total
+                    await MainActor.run {
+                        batchProgress = progress
+                        statusMessage = "批次處理中：\(processedCount)/\(queueCopy.count)"
+                    }
+                } catch {
+                    processedCount += 1
+                }
+            }
+
+            await MainActor.run {
+                isBatchProcessing = false
+                batchProgress = 1.0
+                statusMessage = "批次完成 \(processedCount)/\(queueCopy.count) 張"
+            }
+        }
     }
 }

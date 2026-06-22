@@ -4,7 +4,13 @@ import Foundation
 import ImageIO
 import UniformTypeIdentifiers
 
-struct PrototypePhotoRepairService {
+/// Swappable repair backend. Prototype uses Core Image; future ML services (CoreML Real-ESRGAN/GFPGAN etc.)
+/// will conform to this after model conversion from .pth.
+protocol PhotoRepairService {
+    func processPhoto(at url: URL, settings: RepairSettings) throws -> ProcessedPhoto
+}
+
+struct PrototypePhotoRepairService: PhotoRepairService {
     private let context: CIContext
 
     init(context: CIContext = CIContext()) {
