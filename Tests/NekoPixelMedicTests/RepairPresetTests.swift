@@ -52,4 +52,18 @@ final class RepairPresetTests: XCTestCase {
         }
         return nil
     }
+
+    func testAllPresetsProduceNonEmptyPlan() {
+        for preset in RepairPreset.allCases {
+            let plan = preset.makePlan(strength: 0.5)
+            XCTAssertFalse(plan.passes.isEmpty, "\(preset) should have at least one pass")
+            XCTAssertGreaterThan(plan.headline.count, 0)
+        }
+    }
+
+    func testDenoisePlanHasNoiseReduction() {
+        let plan = RepairPreset.denoise.makePlan(strength: 0.7)
+        let hasNoise = plan.passes.contains { if case .noiseReduction = $0 { return true }; return false }
+        XCTAssertTrue(hasNoise)
+    }
 }

@@ -112,13 +112,14 @@ final class AppModel {
 
         renderTask = Task { [selectedPreset] in
             do {
-                let result = try await Task.detached(priority: .userInitiated) {
+                try Task.checkCancellation()
+
+                // Use non-detached Task so parent cancellation can propagate
+                let result = try await Task(priority: .userInitiated) {
                     try PrototypePhotoRepairService().processPhoto(at: url, settings: settings)
                 }.value
 
-                guard !Task.isCancelled else {
-                    return
-                }
+                try Task.checkCancellation()
 
                 processedData = result.previewData
                 processedImage = NSImage(data: result.previewData)
@@ -126,13 +127,14 @@ final class AppModel {
                 renderNotes = result.notes
                 isProcessing = false
                 statusMessage = "\(selectedPreset.displayName) preview 已更新。"
+            } catch is CancellationError {
+                // Silently ignore cancellation
+                return
             } catch {
-                guard !Task.isCancelled else {
-                    return
+                if !Task.isCancelled {
+                    isProcessing = false
+                    statusMessage = error.localizedDescription
                 }
-
-                isProcessing = false
-                statusMessage = error.localizedDescription
             }
         }
     }
@@ -194,27 +196,27 @@ final class AppModel {
             }
 
             do {
+                try Task.checkCancellation()
+
                 try await modelDownloadManager.download(model: model, into: modelStore) { [weak self] progress in
                     Task { @MainActor [weak self] in
                         self?.updateModelState(.downloading(progress: progress.fractionCompleted), forModelID: model.id)
                     }
                 }
 
-                guard !Task.isCancelled else {
-                    return
-                }
+                try Task.checkCancellation()
 
                 refreshModelLibrary()
                 activeModelDownloadID = nil
                 statusMessage = "已安裝 \(model.displayName)。下一步只剩把推論 backend 接上。"
+            } catch is CancellationError {
+                return
             } catch {
-                guard !Task.isCancelled else {
-                    return
+                if !Task.isCancelled {
+                    activeModelDownloadID = nil
+                    updateModelState(.failed(message: "下載失敗"), forModelID: model.id)
+                    statusMessage = "模型下載失敗：\(error.localizedDescription)"
                 }
-
-                activeModelDownloadID = nil
-                updateModelState(.failed(message: "下載失敗"), forModelID: model.id)
-                statusMessage = "模型下載失敗：\(error.localizedDescription)"
             }
         }
     }
@@ -254,9 +256,7 @@ final class AppModel {
         debounceTask = Task { [weak self] in
             do {
                 try await Task.sleep(for: .milliseconds(180))
-                guard !Task.isCancelled else {
-                    return
-                }
+                try Task.checkCancellation()
                 self?.refreshPreview()
             } catch {
                 return
